@@ -79,7 +79,7 @@ window.onload = openHomePage;
 // }
 // Fetch data and initialize DataTable
 $(document).ready(function () {
-    fetch('https://your-project-name.vercel.app/api/team-members')
+    fetch('https://team-dashboard-azure.vercel.app/api/index')
         .then(function (response) { return response.json(); })
         .then(function (data) {
         var table = $('#example').DataTable({
@@ -197,7 +197,7 @@ var closeModal = function () {
     }
 };
 // ===================== Fetch Team Members =====================
-var apiEndpoint = 'https://your-project-name.vercel.app/api/team-members';
+var apiEndpoint = "http://localhost:5000/api/team-members";
 var fetchTeamMembers = function () { return __awaiter(_this, void 0, void 0, function () {
     var response, teamMembers, error_1;
     return __generator(this, function (_a) {

@@ -46,7 +46,7 @@ const teamMembers = [
 // API endpoint to fetch team members
 module.exports = (req, res) => {
     // Enable CORS for the specific origin
-    cors({ origin: 'https://team-dashboard-azure.vercel.app' })(req, res, () => {
+    cors({ origin: 'https://team-dashboard-azure.vercel.app/api/index' })(req, res, () => {
         res.status(200).json(teamMembers);
     });
 };

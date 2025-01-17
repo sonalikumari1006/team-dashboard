@@ -64,7 +64,7 @@ window.onload = openHomePage;
 
 // Fetch data and initialize DataTable
 $(document).ready(() => {
-    fetch('http://localhost:5000/api/team-members')
+    fetch('https://team-dashboard-azure.vercel.app/api/index')
         .then((response) => response.json())
         .then((data) => {
             const table = $('#example').DataTable({
