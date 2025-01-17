@@ -199,7 +199,7 @@ const closeModal = (): void => {
 
 // ===================== Fetch Team Members =====================
 
-const apiEndpoint: string = "http://localhost:5000/api/team-members";
+const apiEndpoint: string = "https://team-dashboard-azure.vercel.app/api/index";
 
 const fetchTeamMembers = async (): Promise<void> => {
     try {

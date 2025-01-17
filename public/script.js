@@ -197,7 +197,7 @@ var closeModal = function () {
     }
 };
 // ===================== Fetch Team Members =====================
-var apiEndpoint = "http://localhost:5000/api/team-members";
+var apiEndpoint = "https://team-dashboard-azure.vercel.app/api/index";
 var fetchTeamMembers = function () { return __awaiter(_this, void 0, void 0, function () {
     var response, teamMembers, error_1;
     return __generator(this, function (_a) {
