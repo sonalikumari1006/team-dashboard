@@ -22,6 +22,10 @@ app.get('/api/team-members', (req, res) => {
     res.json(teamMembers);
 });
 
+// Enable CORS for the specific origin
+app.use(cors({ origin: 'https://team-dashboard-azure.vercel.app' }));
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
