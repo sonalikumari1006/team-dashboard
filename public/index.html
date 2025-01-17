@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media (min-width: 992px) {
+            main {
+                padding-left: 240px;
+            }
+        }
+        .incomeExpensePieChart {
+            width: 100% !important;
+            height: 300px !important;
+        }
+    </style>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+    
+     
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+      
+      <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> //for pie chart
+  
+      <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+     
+</head>
+
+<body class="bg-gray-100">
+    <!-- <script src="script_model/script.js"></script> -->
+    <header>
+        <!-- Sidebar -->
+        <nav id="sidebarMenu" class="fixed mt-[47px] left-0 z-50 h-full w-60 bg-white shadow-md transition-transform md:translate-x-0">
+            <div class="sticky top-0 p-4">
+                <div class="space-y-4">
+                    <a href="#" id="blue-home" class="block px-4 py-2 text-white bg-blue-600 rounded hover:bg-gray-100 active:bg-gray-200" onclick="changeBlueHome();">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        <span>Home Page</span>
+                    </a>
+                    <a href="#" id="blue-task" class="block px-4 py-2  text-gray-800 rounded shadow hover:bg-blue-700" onclick="changeBlueTask();">
+                        <i class="fas fa-chart-area mr-2"></i>
+                        <span>Task Management</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!-- Sidebar -->
+
+        <!-- Navbar -->
+        <nav id="main-navbar" class="fixed top-0 left-0 z-40 w-full bg-gray-800 text-white h-[47px] shadow-md">
+            <div class="container flex items-center justify-between px-4 py-3">
+                <!-- Brand -->
+                <a href="#" class="text-lg font-bold">
+                    <!-- <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" class="h-6" alt="Brand" /> -->
+                    <img src="../logo.png" class="h-[32px] w-auto rounded-[50px] ml-[9px]" alt="logo">
+                </a>
+                <!-- Right links
+                <ul class="flex items-center space-x-4">
+                   
+                </ul> -->
+            </div>
+        </nav>
+        <!-- Navbar -->
+    </header>
+
+    
+
+    <!-- Main Layout -->
+<main class="pt-16">
+<div id="homePage">
+    <!-- =========== This is home page div which is raped all the home page content ============ -->
+        <!-- ======================================== -->
+    
+        <div class="mt-[20px] ml-[25px] text-[35px] font-bold">
+            <h1>Dashboard</h1>
+        </div>
+        <div class="ml-[27px] text-[20px] mb-[20px]" >
+            <p1 class="m-0 p-0">Home page</p1>
+        </div>
+    <!-- ========= Count card ========== -->
+    
+        <div class="grid grid-cols-12 gap-4 mx-2 ml-[24px]">
+        <div class="col-span-3">
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="flex items-center p-4" style="gap:31px;">
+                    <div>
+                        <div class="w-12 h-12 bg-orange-200 flex items-center justify-center rounded-full">
+                            <img class="w-8 h-8" src="./download.png" />
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-800" id="totalIncomeDynamic"></p>
+                        <p class="text-sm text-gray-800" style="font-weight:800;">Total Number of Members</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 ExpensePieChart card" >
+            <!-- <div class="headingbarchart">
+                <p class="headingtitle">Expenses Chart</p>
+            </div> -->
+            
+            <!-- Removed the calendar container (datepicker) -->
+            <!-- <div class="calendar-container">
+                <input type="text" id="datepicker">
+            </div> -->
+    
+            <!-- <div class="pieChartContainer">
+                <div class="noDataFoundHere" id="pieChartNodataFound" style="display:none">
+                    <img class="noDataFoundHereImg piechartNodataclass" src="~/datanotfound.svg" />
+                </div>
+                <canvas id="myChart" class="incomeExpensePieChart"></canvas>
+            </div> -->
+        </div>
+        </div>
+        
+        
+        
+<!-- ===================table =====================-->
+    <div class="mt-6 ml-5" style="margin:27px !important">
+        <table id="example" class="table-auto w-full whitespace-nowrap" style="width:1542px !important">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 text-left">Name</th>
+                    <th class="px-4 py-2 text-left">Role</th>
+                    <th class="px-4 py-2 text-left">Short Bio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td class="px-4 py-2">John Doe</td>
+                    <td class="px-4 py-2">Developer</td>
+                    <td class="px-4 py-2">Experienced in JavaScript and Python.</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2">Jane Smith</td>
+                    <td class="px-4 py-2">Designer</td>
+                    <td class="px-4 py-2">Specializes in UI/UX design.</td>
+                </tr> -->
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- ========================================================================================= -->
+
+
+
+
+
+
+
+
+<!-- ===================================== Task management ========================================= -->
+<div id="taskManagementPage">
+    <div class="ml-[27px] text-[24px] mb-[20px]" >
+        <p1 class="m-0 p-0">Task Management</p1>
+    </div>
+    <div class="flex space-x-4 mx-2 ml-6">
+        <!-- ======== To-do Card ================ -->
+        <div class="w-full sm:w-1/3 p-4">
+            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex items-center p-6 gap-6">
+                    <div class="w-14 h-14 bg-orange-200 flex items-center justify-center rounded-full">
+                        <img class="w-8 h-8" src="./tasks.png" alt="To-do Icon" />
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold text-gray-800" id="dynamicTodo">50</p>
+                        <p class="text-base text-gray-600 font-semibold">To-do</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ================ End To-do Card ======================== -->
+    
+        <!-- ======== In-progress Card ================ -->
+        <div class="w-full sm:w-1/3 p-4">
+            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex items-center p-6 gap-6">
+                    <div class="w-14 h-14 bg-blue-200 flex items-center justify-center rounded-full">
+                        <img class="w-8 h-8" src="./Progress.jpg" alt="Progress Icon" />
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold text-gray-800" id="dynamicProgress">50</p>
+                        <p class="text-base text-gray-600 font-semibold">Progress</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ================ End In-progress Card ======================== -->
+    
+        <!-- ======== Complete Card ================ -->
+        <div class="w-full sm:w-1/3 p-4">
+            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex items-center p-6 gap-6">
+                    <div class="w-14 h-14 bg-green-200 flex items-center justify-center rounded-full">
+                        <img class="w-8 h-8" src="./download.png" alt="Complete Icon" />
+                    </div>
+                    <div>
+                        <p id="dynamicComplete" class="text-3xl font-bold text-gray-800">50</p>
+                        <p class="text-base text-gray-600 font-semibold">Complete</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ================ End Complete Card ======================== -->
+    </div>
+         <!-- ==============  Add button ========================== -->
+      <div class="flex justify-end mt-2 mr-[100px]">
+        <button id="addTaskBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Add Task+</button>
+      </div>
+     <!-- ===================== End add button ===================== -->
+      
+      <!-- =================== Table ====================== -->
+        <div class="overflow-x-auto mt-[35px] mx-2">
+            <table id="taskTable" class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left">Name of Member</th>
+                        <th class="px-4 py-2 text-left">Title</th>
+                        <th class="px-4 py-2 text-left">Description</th>
+                        <th class="px-4 py-2 text-left">Status</th>
+                        <th class="px-4 py-2 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <!-- Rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        
+                
+       <!-- ============================================== -->
+    <!-- Modal -->
+    <!-- Modal -->
+<div id="taskModal" class="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg w-[400px]">
+      <h2 class="text-xl font-semibold mb-4">Add Task</h2>
+      <form id="taskForm">
+        <div class="mb-4">
+          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+          <select id="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+            <!-- Names will be populated here -->
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+          <input id="title" type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" required>
+        </div>
+        <div class="mb-4">
+          <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+          <textarea id="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+          <select id="status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+            <option value="to do">To Do</option>
+            <option value="progress">Progress</option>
+            <option value="complete">Complete</option>
+          </select>
+        </div>
+        <div class="flex justify-end">
+          <button id="saveBtn" type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Save</button>
+          <!-- Close Button -->
+          <button type="button" id="closeBtn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full">Close</button>
+ 
+        </div>
+      </form>
+    </div>
+    </div>
+</div>
+<!-- ===================================================================================================== -->
+</main>
+  
+<script type="module" src="./script.js"></script>
+ 
+ <script>
+    
+       function changeBlueTask(){
+           // change task management button to blue
+           document.getElementById("blue-task").style.backgroundColor = "blue";
+           document.getElementById("blue-task").style.color = "white";
+           document.getElementById("blue-home").style.backgroundColor = "white"; // Removes any background color
+           document.getElementById("blue-home").style.color = "gray";
+           // Show Task Management page and hide Home Page
+           document.getElementById("taskManagementPage").classList.remove("hidden");
+           document.getElementById("homePage").classList.add("hidden");
+
+
+       }
+       function changeBlueHome(){
+           document.getElementById("blue-home").style.backgroundColor = "blue";
+           document.getElementById("blue-home").style.color = "white";
+           document.getElementById("blue-task").style.backgroundColor = "white"; // Removes any background color
+           document.getElementById("blue-task").style.color = "gray";
+            // Show Home Page and hide Task Management page
+           document.getElementById("homePage").classList.remove("hidden");
+           document.getElementById("taskManagementPage").classList.add("hidden");
+       }
+ </script> 
+
+</body>
+
+</html>
