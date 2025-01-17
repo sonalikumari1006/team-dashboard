@@ -1,4 +1,4 @@
-// const express = require('express');
+const express = require('express');
 // const cors = require('cors');
 
 // const app = express();
@@ -22,8 +22,6 @@
 //     res.json(teamMembers);
 // });
 
-// Enable CORS for the specific origin
-// app.use(cors({ origin: 'https://team-dashboard-azure.vercel.app' }));
 
 
 // Start the server
@@ -35,30 +33,20 @@
 // Importing CORS and Express is unnecessary on Vercel for API routes
 // You can handle CORS using a middleware if necessary, but Vercel handles it automatically
 
+// api/team-members.js
+const cors = require('cors');
+
+const teamMembers = [
+    { name: 'Sonali', role: 'Developer', bio: 'Experienced in HTML, CSS, and JavaScript.' },
+    { name: 'Rohan', role: 'Designer', bio: 'Specializes in UI/UX design.' },
+    { name: 'Sonam', role: 'Project Manager', bio: 'Expert in Agile methodologies.' },
+    { name: 'Sonu', role: 'QA Engineer', bio: 'Skilled in automated testing.' }
+];
+
+// API endpoint to fetch team members
 module.exports = (req, res) => {
-    // Sample data
-    const teamMembers = [
-        { name: 'Sonali', role: 'Developer', bio: 'Experienced in HTML, CSS, and JavaScript.' },
-        { name: 'Rohan', role: 'Designer', bio: 'Specializes in UI/UX design.' },
-        { name: 'Sonam', role: 'Project Manager', bio: 'Expert in Agile methodologies.' },
-        { name: 'Sonu', role: 'QA Engineer', bio: 'Skilled in automated testing.' }
-    ];
-
-    // CORS headers (if needed)
-    res.setHeader('Access-Control-Allow-Origin', 'https://team-dashboard-azure.vercel.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-    // Handle preflight OPTIONS requests
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    // API endpoint to fetch team members
-    if (req.method === 'GET') {
+    // Enable CORS for the specific origin
+    cors({ origin: 'https://team-dashboard-azure.vercel.app' })(req, res, () => {
         res.status(200).json(teamMembers);
-    } else {
-        res.status(405).send('Method Not Allowed');
-    }
+    });
 };
-
