@@ -142,7 +142,7 @@ var _this = this;
                             localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                             // Close the modal
                             closeModal_1();
-                            location.reload();
+                            // location.reload();
                         }
                     };
                 }

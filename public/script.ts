@@ -133,7 +133,7 @@ $(document).ready(function () {
 
                         // Close the modal
                         closeModal();
-                        location.reload();
+                        // location.reload();
                     }
                 };
             }
