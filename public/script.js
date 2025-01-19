@@ -116,6 +116,8 @@ var _this = this;
                 editingTaskId_1 = taskId;
                 // Update the save button to handle the edit
                 if (saveBtn_1) {
+                    // Clear any previously assigned event listeners
+                    saveBtn_1.onclick = null;
                     saveBtn_1.onclick = function () {
                         if (nameSelect_1 && titleInput_1 && descriptionTextarea_1 && statusSelect_1) {
                             // Update task with the new values
