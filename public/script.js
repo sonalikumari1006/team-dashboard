@@ -71,24 +71,6 @@ var _this = this;
             .catch(function (error) { return console.error('Error fetching data:', error); });
     });
     // Type for DOM elements
-    //   const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
-    //   const taskModal: HTMLElement | null = document.getElementById('taskModal');
-    //   const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
-    //   const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
-    //   const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
-    //   const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
-    // Initial page load configuration
-    $(document).ready(function () {
-        var homePage = document.getElementById("homePage");
-        var taskManagementPage = document.getElementById("taskManagementPage");
-        var taskTableLength = document.getElementById("taskTable_length");
-        if (homePage && taskManagementPage && taskTableLength) {
-            homePage.classList.remove("hidden");
-            taskManagementPage.classList.add("hidden");
-            taskTableLength.style.marginBottom = "10px";
-        }
-    });
-    // Type for DOM elements
     var addTaskBtn = document.getElementById('addTaskBtn');
     var taskModal_1 = document.getElementById('taskModal');
     var taskForm = document.getElementById('taskForm');
@@ -98,6 +80,8 @@ var _this = this;
     var descriptionTextarea_1 = document.getElementById('description');
     var statusSelect_1 = document.getElementById('status');
     var closeBtn = document.getElementById('closeBtn');
+    var isEditing_1 = false;
+    var editingTaskId_1 = null;
     // ===================== DataTable Initialization =====================
     $(document).ready(function () {
         $('#taskTable').DataTable({
@@ -127,9 +111,11 @@ var _this = this;
                     statusSelect_1.value = taskToEdit.status;
                 // Open the modal for editing
                 openModal_1();
+                //set edit mode
+                isEditing_1 = true;
+                editingTaskId_1 = taskId;
                 // Update the save button to handle the edit
                 if (saveBtn_1) {
-                    saveBtn_1.onclick = null; // Clear existing handler
                     saveBtn_1.onclick = function () {
                         if (nameSelect_1 && titleInput_1 && descriptionTextarea_1 && statusSelect_1) {
                             // Update task with the new values
@@ -141,9 +127,11 @@ var _this = this;
                             var updatedTasks = tasks.map(function (task) { return task.id === taskId ? taskToEdit : task; });
                             localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                             loadTableData_1();
+                            // Set the editing state 
+                            isEditing_1 = false;
+                            editingTaskId_1 = null;
                             // Close the modal
                             closeModal_1();
-                            // location.reload();
                         }
                     };
                 }
@@ -168,6 +156,8 @@ var _this = this;
         if (taskModal_1) {
             taskModal_1.classList.add('hidden');
         }
+        isEditing_1 = false;
+        editingTaskId_1 = null;
     };
     // ===================== Fetch Team Members =====================
     var apiEndpoint_1 = "https://team-dashboard-azure.vercel.app/api/index";
@@ -177,7 +167,6 @@ var _this = this;
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    debugger;
                     return [4 /*yield*/, fetch(apiEndpoint_1)];
                 case 1:
                     response = _a.sent();
@@ -212,6 +201,9 @@ var _this = this;
     if (taskForm) {
         taskForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            if (isEditing_1) {
+                return;
+            }
             var task = {
                 id: Date.now(),
                 name: (nameSelect_1 === null || nameSelect_1 === void 0 ? void 0 : nameSelect_1.value) || '',
@@ -239,7 +231,7 @@ var _this = this;
         var completeCount2 = 0;
         var completeCount3 = 0;
         tasks.forEach(function (task) {
-            var newRow = "\n            <tr data-id=\"".concat(task.id, "\">\n                <td class=\"px-4 py-2\">").concat(task.name, "</td>\n                <td class=\"px-4 py-2\">").concat(task.title, "</td>\n                <td class=\"px-4 py-2\">").concat(task.description, "</td>\n                <td class=\"px-4 py-2\">").concat(task.status, "</td>\n                <td class=\"px-4 py-2\">\n                    <button class=\"editBtn px-2 py-1 bg-blue-500 text-white rounded\">Edit</button>\n                    <button class=\"deleteBtn px-2 py-1 bg-red-500 text-white rounded\">Delete</button>\n                </td>\n            </tr>");
+            var newRow = "\n              <tr data-id=\"".concat(task.id, "\">\n                  <td class=\"px-4 py-2\">").concat(task.name, "</td>\n                  <td class=\"px-4 py-2\">").concat(task.title, "</td>\n                  <td class=\"px-4 py-2\">").concat(task.description, "</td>\n                  <td class=\"px-4 py-2\">").concat(task.status, "</td>\n                  <td class=\"px-4 py-2\">\n                      <button class=\"editBtn px-2 py-1 bg-blue-500 text-white rounded\">Edit</button>\n                      <button class=\"deleteBtn px-2 py-1 bg-red-500 text-white rounded\">Delete</button>\n                  </td>\n              </tr>");
             if (task.status === "complete") {
                 completeCount1++;
             }

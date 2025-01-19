@@ -54,222 +54,211 @@
   });
 
   // Type for DOM elements
-//   const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
-//   const taskModal: HTMLElement | null = document.getElementById('taskModal');
-//   const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
-//   const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
-//   const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
-//   const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
+  const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
+  const taskModal: HTMLElement | null = document.getElementById('taskModal');
+  const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
+  const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
+  const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
+  const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
+  const descriptionTextarea: HTMLTextAreaElement | null = document.getElementById('description') as HTMLTextAreaElement;
+  const statusSelect: HTMLSelectElement | null = document.getElementById('status') as HTMLSelectElement;
+  const closeBtn: HTMLElement | null = document.getElementById('closeBtn');
+  
+  let isEditing: boolean = false;
+  let editingTaskId: number | null = null;
 
-// Initial page load configuration
-$(document).ready(() => {
-    const homePage = document.getElementById("homePage") as HTMLElement;
-    const taskManagementPage = document.getElementById("taskManagementPage") as HTMLElement;
-    const taskTableLength = document.getElementById("taskTable_length") as HTMLElement;
+  // ===================== DataTable Initialization =====================
 
-    if (homePage && taskManagementPage && taskTableLength) {
-        homePage.classList.remove("hidden");
-        taskManagementPage.classList.add("hidden");
-        taskTableLength.style.marginBottom = "10px";
-    }
-});
+  $(document).ready(function () {
+      $('#taskTable').DataTable({
+          paging: false,
+          searching: false,
+          ordering: false,
+          info: false,
+          responsive: false,
+          lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
+          pageLength: 10 // Set the default number of entries to show
+      });
 
+      // Event listeners for edit and delete buttons
+      $("#taskTable").on("click", ".editBtn", function () {
+          // Edit functionality
+          const taskId: number = $(this).closest('tr').data('id');
+          const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+          const taskToEdit: Task | undefined = tasks.find(task => task.id === taskId);
 
-// Type for DOM elements
-const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
-const taskModal: HTMLElement | null = document.getElementById('taskModal');
-const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
-const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
-const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
-const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
-const descriptionTextarea: HTMLTextAreaElement | null = document.getElementById('description') as HTMLTextAreaElement;
-const statusSelect: HTMLSelectElement | null = document.getElementById('status') as HTMLSelectElement;
-const closeBtn: HTMLElement | null = document.getElementById('closeBtn');
+          if (taskToEdit) {
+              // Populate the modal with the task data
+              if (nameSelect) nameSelect.value = taskToEdit.name;
+              if (titleInput) titleInput.value = taskToEdit.title;
+              if (descriptionTextarea) descriptionTextarea.value = taskToEdit.description;
+              if (statusSelect) statusSelect.value = taskToEdit.status;
 
-// ===================== DataTable Initialization =====================
+              // Open the modal for editing
+              openModal();
+              //set edit mode
+              isEditing=true;
+              editingTaskId=taskId;
 
-$(document).ready(function () {
-    $('#taskTable').DataTable({
-        paging: false,
-        searching: false,
-        ordering: false,
-        info: false,
-        responsive: false,
-        lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
-        pageLength: 10 // Set the default number of entries to show
-    });
+              // Update the save button to handle the edit
+              if (saveBtn) {
+                  saveBtn.onclick = () => {
+                      if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
+                          // Update task with the new values
+                          taskToEdit.name = nameSelect.value;
+                          taskToEdit.title = titleInput.value;
+                          taskToEdit.description = descriptionTextarea.value;
+                          taskToEdit.status = statusSelect.value;
+                          
+                          // Save the updated task to local storage
+                          const updatedTasks: Task[] = tasks.map(task => task.id === taskId ? taskToEdit : task);
+                          localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+                          loadTableData();
 
-    // Event listeners for edit and delete buttons
-    $("#taskTable").on("click", ".editBtn", function () {
-        // Edit functionality
-        const taskId: number = $(this).closest('tr').data('id');
-        const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-        const taskToEdit: Task | undefined = tasks.find(task => task.id === taskId);
+                          // Set the editing state 
+                            isEditing = false;
+                            editingTaskId = null;
+                          // Close the modal
+                          closeModal();
+                      }
+                  };
+              }
+          }
+      });
 
-        if (taskToEdit) {
-            // Populate the modal with the task data
-            if (nameSelect) nameSelect.value = taskToEdit.name;
-            if (titleInput) titleInput.value = taskToEdit.title;
-            if (descriptionTextarea) descriptionTextarea.value = taskToEdit.description;
-            if (statusSelect) statusSelect.value = taskToEdit.status;
+      $("#taskTable").on("click", ".deleteBtn", function () {
+          const taskId: number = $(this).closest('tr').data('id');
+          const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+          const updatedTasks: Task[] = tasks.filter(task => task.id !== taskId);
+          localStorage.setItem('tasks', JSON.stringify(updatedTasks));
 
-            // Open the modal for editing
-            openModal();
+          loadTableData();
+      });
+  });
 
-            // Update the save button to handle the edit
-            if (saveBtn) {
-                saveBtn.onclick=null; // Clear existing handler
-                saveBtn.onclick = () => {
-                    if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
-                        // Update task with the new values
-                        taskToEdit.name = nameSelect.value;
-                        taskToEdit.title = titleInput.value;
-                        taskToEdit.description = descriptionTextarea.value;
-                        taskToEdit.status = statusSelect.value;
-                        
-                        // Save the updated task to local storage
-                        const updatedTasks: Task[] = tasks.map(task => task.id === taskId ? taskToEdit : task);
-                        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-                        loadTableData();
-                        // Close the modal
-                        closeModal();
-                        // location.reload();
-                    }
-                };
-            }
+  // ===================== Modal Functions =====================
+
+  const openModal = (): void => {
+      if (taskModal) {
+          taskModal.classList.remove('hidden');
+      }
+      fetchTeamMembers();  // Fetch team members when the modal is opened
+  };
+
+  const closeModal = (): void => {
+      if (taskModal) {
+          taskModal.classList.add('hidden');
+      }
+      isEditing=false;
+      editingTaskId = null;
+  };
+
+  // ===================== Fetch Team Members =====================
+
+  const apiEndpoint: string = "https://team-dashboard-azure.vercel.app/api/index";
+
+  const fetchTeamMembers = async (): Promise<void> => {
+      try {
+          const response = await fetch(apiEndpoint);
+          const teamMembers: TeamMember[] = await response.json();
+
+          if (nameSelect) {
+              teamMembers.forEach((member) => {
+                  const option = document.createElement('option');
+                  option.value = member.name;
+                  option.textContent = `${member.name} - ${member.role}`;
+                  nameSelect.appendChild(option);
+              });
+          }
+      } catch (error) {
+          console.error('Error fetching team members:', error);
+      }
+  };
+
+  // ===================== Save Task =====================
+
+  const saveTask = (task: Task): void => {
+      const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      location.reload();
+  };
+
+  // ===================== Handle Form Submission =====================
+
+  if (taskForm) {
+      taskForm.addEventListener('submit', (e: Event) => {
+          e.preventDefault();
+        if(isEditing){
+            return;
         }
-    });
+          const task: Task = {
+              id: Date.now(),
+              name: nameSelect?.value || '',
+              title: titleInput?.value || '',
+              description: descriptionTextarea?.value || '',
+              status: statusSelect?.value || ''
+          };
 
-    $("#taskTable").on("click", ".deleteBtn", function () {
-        const taskId: number = $(this).closest('tr').data('id');
-        const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-        const updatedTasks: Task[] = tasks.filter(task => task.id !== taskId);
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+          saveTask(task);
+          closeModal();  // Close the modal after saving
+      });
+  }
 
-        loadTableData();
-    });
-});
+  // ===================== Event Listener to Open Modal =====================
 
-// ===================== Modal Functions =====================
+  if (addTaskBtn) {
+      addTaskBtn.addEventListener('click', openModal);
+  }
 
-const openModal = (): void => {
-    if (taskModal) {
-        taskModal.classList.remove('hidden');
-    }
-    fetchTeamMembers();  // Fetch team members when the modal is opened
-};
+  if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+  }
 
-const closeModal = (): void => {
-    if (taskModal) {
-        taskModal.classList.add('hidden');
-    }
-};
+  // ===================== Load Data from Local Storage =====================
 
-// ===================== Fetch Team Members =====================
+  const loadTableData = (): void => {
+      const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+      const tableBody = $('#taskTable tbody');
+      tableBody.empty();
 
-const apiEndpoint: string = "https://team-dashboard-azure.vercel.app/api/index";
+      let completeCount1: number = 0;
+      let completeCount2: number = 0;
+      let completeCount3: number = 0;
 
-const fetchTeamMembers = async (): Promise<void> => {
-    try {
-        debugger;
-        const response = await fetch(apiEndpoint);
-        const teamMembers: TeamMember[] = await response.json();
+      tasks.forEach((task: Task) => {
+          const newRow = `
+              <tr data-id="${task.id}">
+                  <td class="px-4 py-2">${task.name}</td>
+                  <td class="px-4 py-2">${task.title}</td>
+                  <td class="px-4 py-2">${task.description}</td>
+                  <td class="px-4 py-2">${task.status}</td>
+                  <td class="px-4 py-2">
+                      <button class="editBtn px-2 py-1 bg-blue-500 text-white rounded">Edit</button>
+                      <button class="deleteBtn px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+                  </td>
+              </tr>`;
 
-        if (nameSelect) {
-            teamMembers.forEach((member) => {
-                const option = document.createElement('option');
-                option.value = member.name;
-                option.textContent = `${member.name} - ${member.role}`;
-                nameSelect.appendChild(option);
-            });
-        }
-    } catch (error) {
-        console.error('Error fetching team members:', error);
-    }
-};
+          if (task.status === "complete") {
+              completeCount1++;
+          }
+          if (task.status === "progress") {
+              completeCount2++;
+          }
+          if (task.status === "to do") {
+              completeCount3++;
+          }
 
-// ===================== Save Task =====================
+          tableBody.append(newRow);
+      });
 
-const saveTask = (task: Task): void => {
-    const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.push(task);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    location.reload();
-};
+      document.getElementById('dynamicComplete')!.textContent = completeCount1.toString();
+      document.getElementById('dynamicProgress')!.textContent = completeCount2.toString();
+      document.getElementById('dynamicTodo')!.textContent = completeCount3.toString();
+  };
 
-// ===================== Handle Form Submission =====================
-
-if (taskForm) {
-    taskForm.addEventListener('submit', (e: Event) => {
-        e.preventDefault();
-
-        const task: Task = {
-            id: Date.now(),
-            name: nameSelect?.value || '',
-            title: titleInput?.value || '',
-            description: descriptionTextarea?.value || '',
-            status: statusSelect?.value || ''
-        };
-
-        saveTask(task);
-        closeModal();  // Close the modal after saving
-    });
-}
-
-// ===================== Event Listener to Open Modal =====================
-
-if (addTaskBtn) {
-    addTaskBtn.addEventListener('click', openModal);
-}
-
-if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-}
-
-// ===================== Load Data from Local Storage =====================
-
-const loadTableData = (): void => {
-    const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-    const tableBody = $('#taskTable tbody');
-    tableBody.empty();
-
-    let completeCount1: number = 0;
-    let completeCount2: number = 0;
-    let completeCount3: number = 0;
-
-    tasks.forEach((task: Task) => {
-        const newRow = `
-            <tr data-id="${task.id}">
-                <td class="px-4 py-2">${task.name}</td>
-                <td class="px-4 py-2">${task.title}</td>
-                <td class="px-4 py-2">${task.description}</td>
-                <td class="px-4 py-2">${task.status}</td>
-                <td class="px-4 py-2">
-                    <button class="editBtn px-2 py-1 bg-blue-500 text-white rounded">Edit</button>
-                    <button class="deleteBtn px-2 py-1 bg-red-500 text-white rounded">Delete</button>
-                </td>
-            </tr>`;
-
-        if (task.status === "complete") {
-            completeCount1++;
-        }
-        if (task.status === "progress") {
-            completeCount2++;
-        }
-        if (task.status === "to do") {
-            completeCount3++;
-        }
-
-        tableBody.append(newRow);
-    });
-
-    document.getElementById('dynamicComplete')!.textContent = completeCount1.toString();
-    document.getElementById('dynamicProgress')!.textContent = completeCount2.toString();
-    document.getElementById('dynamicTodo')!.textContent = completeCount3.toString();
-};
-
-// Initialize table data on page load
-$(document).ready(function () {
-    loadTableData();
-});
+  // Initialize table data on page load
+  $(document).ready(function () {
+      loadTableData();
+  });
 }
