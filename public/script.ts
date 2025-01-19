@@ -102,6 +102,8 @@
 
               // Update the save button to handle the edit
               if (saveBtn) {
+                // Clear any previously assigned event listeners
+                saveBtn.onclick = null;
                   saveBtn.onclick = () => {
                       if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
                           // Update task with the new values
