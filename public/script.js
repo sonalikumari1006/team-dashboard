@@ -140,6 +140,7 @@ var _this = this;
                             // Save the updated task to local storage
                             var updatedTasks = tasks.map(function (task) { return task.id === taskId ? taskToEdit : task; });
                             localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+                            loadTableData_1();
                             // Close the modal
                             closeModal_1();
                             // location.reload();

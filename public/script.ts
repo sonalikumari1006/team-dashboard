@@ -130,7 +130,7 @@ $(document).ready(function () {
                         // Save the updated task to local storage
                         const updatedTasks: Task[] = tasks.map(task => task.id === taskId ? taskToEdit : task);
                         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-
+                        loadTableData();
                         // Close the modal
                         closeModal();
                         // location.reload();
