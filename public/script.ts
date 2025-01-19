@@ -28,39 +28,6 @@ function openHomePage(): void {
 window.onload = openHomePage;
 
 
-// // Change to Task Management page (blue button)
-// function changeBlueTask(): void {
-//     const blueTask = document.getElementById("blue-task") as HTMLElement;
-//     const blueHome = document.getElementById("blue-home") as HTMLElement;
-//     const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-//     const homePage = document.getElementById("homePage") as HTMLElement;
-
-//     if (blueTask && blueHome && taskPage && homePage) {
-//         blueTask.style.backgroundColor = "blue";
-//         blueTask.style.color = "white";
-//         blueHome.style.backgroundColor = "white"; // Removes any background color
-//         blueHome.style.color = "gray";
-//         taskPage.classList.remove("hidden");
-//         homePage.classList.add("hidden");
-//     }
-// }
-
-// // Change to Home page (blue button)
-// function changeBlueHome(): void {
-//     const blueTask = document.getElementById("blue-task") as HTMLElement;
-//     const blueHome = document.getElementById("blue-home") as HTMLElement;
-//     const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-//     const homePage = document.getElementById("homePage") as HTMLElement;
-
-//     if (blueTask && blueHome && taskPage && homePage) {
-//         blueHome.style.backgroundColor = "blue";
-//         blueHome.style.color = "white";
-//         blueTask.style.backgroundColor = "white"; // Removes any background color
-//         blueTask.style.color = "gray";
-//         homePage.classList.remove("hidden");
-//         taskPage.classList.add("hidden");
-//     }
-// }
 
 // Fetch data and initialize DataTable
 $(document).ready(() => {
@@ -151,6 +118,7 @@ $(document).ready(function () {
 
             // Update the save button to handle the edit
             if (saveBtn) {
+                saveBtn.onclick=null; // Clear existing handler
                 saveBtn.onclick = () => {
                     if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
                         // Update task with the new values
@@ -203,6 +171,7 @@ const apiEndpoint: string = "https://team-dashboard-azure.vercel.app/api/index";
 
 const fetchTeamMembers = async (): Promise<void> => {
     try {
+        debugger;
         const response = await fetch(apiEndpoint);
         const teamMembers: TeamMember[] = await response.json();
 
