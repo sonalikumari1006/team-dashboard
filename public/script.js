@@ -94,13 +94,14 @@ var _this = this;
             pageLength: 10 // Set the default number of entries to show
         });
         // Event listeners for edit and delete buttons
+        // Open modal to either add or edit task
         $("#taskTable").on("click", ".editBtn", function () {
-            // Edit functionality
+            // Get taskId from the clicked row
             var taskId = $(this).closest('tr').data('id');
             var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
             var taskToEdit = tasks.find(function (task) { return task.id === taskId; });
             if (taskToEdit) {
-                // Populate the modal with the task data
+                // Populate the modal with the task data if editing an existing task
                 if (nameSelect_1)
                     nameSelect_1.value = taskToEdit.name;
                 if (titleInput_1)
@@ -109,36 +110,69 @@ var _this = this;
                     descriptionTextarea_1.value = taskToEdit.description;
                 if (statusSelect_1)
                     statusSelect_1.value = taskToEdit.status;
-                // Open the modal for editing
+                // Open the modal
                 openModal_1();
-                //set edit mode
+                // Set edit mode flag
                 isEditing_1 = true;
                 editingTaskId_1 = taskId;
-                // Update the save button to handle the edit
-                if (saveBtn_1) {
-                    // Clear any previously assigned event listeners
-                    saveBtn_1.onclick = null;
-                    saveBtn_1.onclick = function () {
-                        if (nameSelect_1 && titleInput_1 && descriptionTextarea_1 && statusSelect_1) {
-                            // Update task with the new values
-                            taskToEdit.name = nameSelect_1.value;
-                            taskToEdit.title = titleInput_1.value;
-                            taskToEdit.description = descriptionTextarea_1.value;
-                            taskToEdit.status = statusSelect_1.value;
-                            // Save the updated task to local storage
-                            var updatedTasks = tasks.map(function (task) { return task.id === taskId ? taskToEdit : task; });
-                            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-                            loadTableData_1();
-                            // Set the editing state 
-                            isEditing_1 = false;
-                            editingTaskId_1 = null;
-                            // Close the modal
-                            closeModal_1();
-                        }
-                    };
-                }
             }
         });
+        // Save functionality: For both adding a new task or editing an existing task
+        if (saveBtn_1) {
+            saveBtn_1.onclick = function () {
+                if (nameSelect_1 && titleInput_1 && descriptionTextarea_1 && statusSelect_1) {
+                    // Get form values
+                    var name_1 = nameSelect_1.value;
+                    var title = titleInput_1.value;
+                    var description = descriptionTextarea_1.value;
+                    var status_1 = statusSelect_1.value;
+                    // Basic form validation
+                    if (name_1 === '' || title === '' || description === '' || status_1 === '') {
+                        alert('Please fill out all fields.');
+                        return;
+                    }
+                    var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                    if (isEditing_1 && editingTaskId_1 !== null) {
+                        // If we are editing an existing task, update that specific task
+                        var taskToEdit_1 = tasks.find(function (task) { return task.id === editingTaskId_1; });
+                        if (taskToEdit_1) {
+                            // Update the task data
+                            taskToEdit_1.name = name_1;
+                            taskToEdit_1.title = title;
+                            taskToEdit_1.description = description;
+                            taskToEdit_1.status = status_1;
+                            // Save the updated tasks back to localStorage
+                            var updatedTasks = tasks.map(function (task) { return task.id === editingTaskId_1 ? taskToEdit_1 : task; });
+                            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+                            // Reload the table to reflect the changes
+                            loadTableData_1();
+                            // Close the modal and reset the editing state
+                            closeModal_1();
+                            isEditing_1 = false;
+                            editingTaskId_1 = null;
+                        }
+                    }
+                    else {
+                        // If no task ID exists (new task), create a new task and add it to the list
+                        var newTask = {
+                            id: Date.now(), // Generate a unique ID using timestamp
+                            name: name_1,
+                            title: title,
+                            description: description,
+                            status: status_1
+                        };
+                        // Add the new task to the existing tasks array
+                        tasks.push(newTask);
+                        // Save the updated tasks list back to localStorage
+                        localStorage.setItem('tasks', JSON.stringify(tasks));
+                        // Reload the table to display the new task
+                        loadTableData_1();
+                        // Close the modal
+                        closeModal_1();
+                    }
+                }
+            };
+        }
         $("#taskTable").on("click", ".deleteBtn", function () {
             var taskId = $(this).closest('tr').data('id');
             var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');

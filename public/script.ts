@@ -81,52 +81,95 @@
       });
 
       // Event listeners for edit and delete buttons
-      $("#taskTable").on("click", ".editBtn", function () {
-          // Edit functionality
-          const taskId: number = $(this).closest('tr').data('id');
-          const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-          const taskToEdit: Task | undefined = tasks.find(task => task.id === taskId);
+      // Open modal to either add or edit task
+$("#taskTable").on("click", ".editBtn", function () {
+    // Get taskId from the clicked row
+    const taskId: number = $(this).closest('tr').data('id');
+    const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskToEdit: Task | undefined = tasks.find(task => task.id === taskId);
 
-          if (taskToEdit) {
-              // Populate the modal with the task data
-              if (nameSelect) nameSelect.value = taskToEdit.name;
-              if (titleInput) titleInput.value = taskToEdit.title;
-              if (descriptionTextarea) descriptionTextarea.value = taskToEdit.description;
-              if (statusSelect) statusSelect.value = taskToEdit.status;
+    if (taskToEdit) {
+        // Populate the modal with the task data if editing an existing task
+        if (nameSelect) nameSelect.value = taskToEdit.name;
+        if (titleInput) titleInput.value = taskToEdit.title;
+        if (descriptionTextarea) descriptionTextarea.value = taskToEdit.description;
+        if (statusSelect) statusSelect.value = taskToEdit.status;
 
-              // Open the modal for editing
-              openModal();
-              //set edit mode
-              isEditing=true;
-              editingTaskId=taskId;
+        // Open the modal
+        openModal();
 
-              // Update the save button to handle the edit
-              if (saveBtn) {
-                // Clear any previously assigned event listeners
-                  saveBtn.onclick = null;
-                  saveBtn.onclick = () => {
-                      if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
-                          // Update task with the new values
-                          taskToEdit.name = nameSelect.value;
-                          taskToEdit.title = titleInput.value;
-                          taskToEdit.description = descriptionTextarea.value;
-                          taskToEdit.status = statusSelect.value;
-                          
-                          // Save the updated task to local storage
-                          const updatedTasks: Task[] = tasks.map(task => task.id === taskId ? taskToEdit : task);
-                          localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-                          loadTableData();
+        // Set edit mode flag
+        isEditing = true;
+        editingTaskId = taskId;
+    }
+});
 
-                          // Set the editing state 
-                            isEditing = false;
-                            editingTaskId = null;
-                          // Close the modal
-                          closeModal();
-                      }
-                  };
-              }
-          }
-      });
+// Save functionality: For both adding a new task or editing an existing task
+if (saveBtn) {
+    saveBtn.onclick = () => {
+        if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
+            // Get form values
+            const name = nameSelect.value;
+            const title = titleInput.value;
+            const description = descriptionTextarea.value;
+            const status = statusSelect.value;
+
+            // Basic form validation
+            if (name === '' || title === '' || description === '' || status === '') {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+            if (isEditing && editingTaskId !== null) {
+                // If we are editing an existing task, update that specific task
+                const taskToEdit = tasks.find(task => task.id === editingTaskId);
+                if (taskToEdit) {
+                    // Update the task data
+                    taskToEdit.name = name;
+                    taskToEdit.title = title;
+                    taskToEdit.description = description;
+                    taskToEdit.status = status;
+
+                    // Save the updated tasks back to localStorage
+                    const updatedTasks = tasks.map(task => task.id === editingTaskId ? taskToEdit : task);
+                    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+
+                    // Reload the table to reflect the changes
+                    loadTableData();
+
+                    // Close the modal and reset the editing state
+                    closeModal();
+                    isEditing = false;
+                    editingTaskId = null;
+                }
+            } else {
+                // If no task ID exists (new task), create a new task and add it to the list
+                const newTask = {
+                    id: Date.now(), // Generate a unique ID using timestamp
+                    name: name,
+                    title: title,
+                    description: description,
+                    status: status
+                };
+
+                // Add the new task to the existing tasks array
+                tasks.push(newTask);
+
+                // Save the updated tasks list back to localStorage
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+
+                // Reload the table to display the new task
+                loadTableData();
+
+                // Close the modal
+                closeModal();
+            }
+        }
+    };
+}
+
 
       $("#taskTable").on("click", ".deleteBtn", function () {
           const taskId: number = $(this).closest('tr').data('id');
