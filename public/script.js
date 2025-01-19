@@ -35,253 +35,227 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-function openHomePage() {
-    // Get the Home Page and Task Management Page elements by their IDs
-    var homePage = document.getElementById("homePage");
-    var taskPage = document.getElementById("taskManagementPage");
-    // Show Home Page and hide Task Management Page
-    if (homePage && taskPage) {
-        homePage.classList.remove("hidden"); // Show Home Page
-        taskPage.classList.add("hidden"); // Hide Task Management Page
-    }
-}
-// Call the function on page load to show the home page initially
-window.onload = openHomePage;
-// // Change to Task Management page (blue button)
-// function changeBlueTask(): void {
-//     const blueTask = document.getElementById("blue-task") as HTMLElement;
-//     const blueHome = document.getElementById("blue-home") as HTMLElement;
-//     const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-//     const homePage = document.getElementById("homePage") as HTMLElement;
-//     if (blueTask && blueHome && taskPage && homePage) {
-//         blueTask.style.backgroundColor = "blue";
-//         blueTask.style.color = "white";
-//         blueHome.style.backgroundColor = "white"; // Removes any background color
-//         blueHome.style.color = "gray";
-//         taskPage.classList.remove("hidden");
-//         homePage.classList.add("hidden");
-//     }
-// }
-// // Change to Home page (blue button)
-// function changeBlueHome(): void {
-//     const blueTask = document.getElementById("blue-task") as HTMLElement;
-//     const blueHome = document.getElementById("blue-home") as HTMLElement;
-//     const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-//     const homePage = document.getElementById("homePage") as HTMLElement;
-//     if (blueTask && blueHome && taskPage && homePage) {
-//         blueHome.style.backgroundColor = "blue";
-//         blueHome.style.color = "white";
-//         blueTask.style.backgroundColor = "white"; // Removes any background color
-//         blueTask.style.color = "gray";
-//         homePage.classList.remove("hidden");
-//         taskPage.classList.add("hidden");
-//     }
-// }
-// Fetch data and initialize DataTable
-$(document).ready(function () {
-    fetch('https://team-dashboard-azure.vercel.app/api/index')
-        .then(function (response) { return response.json(); })
-        .then(function (data) {
-        var table = $('#example').DataTable({
-            data: data,
-            columns: [
-                { data: 'name', title: 'Name' },
-                { data: 'role', title: 'Role' },
-                { data: 'bio', title: 'Short Bio' }
-            ],
-            paging: true,
-            searching: true,
-            ordering: true,
-            info: true,
-            responsive: true
-        });
-        // Add search functionality
-        // Add search functionality
-        $('#searchInput').on('keyup', function () {
-            table.search(this.value).draw();
-        });
-        //=================== Adding count in Card =======================
-        $('#totalIncomeDynamic').text(table.rows().count().toString());
-        // ================================================================
-    })
-        .catch(function (error) { return console.error('Error fetching data:', error); });
-});
-// Initial page load configuration
-$(document).ready(function () {
-    var homePage = document.getElementById("homePage");
-    var taskManagementPage = document.getElementById("taskManagementPage");
-    var taskTableLength = document.getElementById("taskTable_length");
-    if (homePage && taskManagementPage && taskTableLength) {
-        homePage.classList.remove("hidden");
-        taskManagementPage.classList.add("hidden");
-        taskTableLength.style.marginBottom = "10px";
-    }
-});
-// Type for DOM elements
-var addTaskBtn = document.getElementById('addTaskBtn');
-var taskModal = document.getElementById('taskModal');
-var taskForm = document.getElementById('taskForm');
-var saveBtn = document.getElementById('saveBtn');
-var nameSelect = document.getElementById('name');
-var titleInput = document.getElementById('title');
-var descriptionTextarea = document.getElementById('description');
-var statusSelect = document.getElementById('status');
-var closeBtn = document.getElementById('closeBtn');
-// ===================== DataTable Initialization =====================
-$(document).ready(function () {
-    $('#taskTable').DataTable({
-        paging: false,
-        searching: false,
-        ordering: false,
-        info: false,
-        responsive: false,
-        lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
-        pageLength: 10 // Set the default number of entries to show
+{
+    //   function openHomePage(): void {
+    //       const homePage = document.getElementById("homePage") as HTMLElement;
+    //       const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
+    //       if (homePage && taskPage) {
+    //           homePage.classList.remove("hidden");
+    //           taskPage.classList.add("hidden");
+    //       }
+    //   }
+    //   window.onload = openHomePage;
+    $(document).ready(function () {
+        // Fetch data and initialize DataTable
+        fetch('https://team-dashboard-azure.vercel.app/api/index')
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+            var table = $('#example').DataTable({
+                data: data,
+                columns: [
+                    { data: 'name', title: 'Name' },
+                    { data: 'role', title: 'Role' },
+                    { data: 'bio', title: 'Short Bio' }
+                ],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                responsive: true
+            });
+            $('#searchInput').on('keyup', function () {
+                table.search(this.value).draw();
+            });
+            $('#totalIncomeDynamic').text(table.rows().count().toString());
+        })
+            .catch(function (error) { return console.error('Error fetching data:', error); });
     });
-    // Event listeners for edit and delete buttons
-    $("#taskTable").on("click", ".editBtn", function () {
-        // Edit functionality
-        var taskId = $(this).closest('tr').data('id');
-        var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        var taskToEdit = tasks.find(function (task) { return task.id === taskId; });
-        if (taskToEdit) {
-            // Populate the modal with the task data
-            if (nameSelect)
-                nameSelect.value = taskToEdit.name;
-            if (titleInput)
-                titleInput.value = taskToEdit.title;
-            if (descriptionTextarea)
-                descriptionTextarea.value = taskToEdit.description;
-            if (statusSelect)
-                statusSelect.value = taskToEdit.status;
-            // Open the modal for editing
-            openModal();
-            // Update the save button to handle the edit
-            if (saveBtn) {
-                saveBtn.onclick = function () {
-                    if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
-                        // Update task with the new values
-                        taskToEdit.name = nameSelect.value;
-                        taskToEdit.title = titleInput.value;
-                        taskToEdit.description = descriptionTextarea.value;
-                        taskToEdit.status = statusSelect.value;
-                        // Save the updated task to local storage
-                        var updatedTasks = tasks.map(function (task) { return task.id === taskId ? taskToEdit : task; });
-                        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-                        // Close the modal
-                        closeModal();
-                        location.reload();
-                    }
-                };
-            }
+    // Type for DOM elements
+    //   const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
+    //   const taskModal: HTMLElement | null = document.getElementById('taskModal');
+    //   const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
+    //   const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
+    //   const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
+    //   const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
+    // Initial page load configuration
+    $(document).ready(function () {
+        var homePage = document.getElementById("homePage");
+        var taskManagementPage = document.getElementById("taskManagementPage");
+        var taskTableLength = document.getElementById("taskTable_length");
+        if (homePage && taskManagementPage && taskTableLength) {
+            homePage.classList.remove("hidden");
+            taskManagementPage.classList.add("hidden");
+            taskTableLength.style.marginBottom = "10px";
         }
     });
-    $("#taskTable").on("click", ".deleteBtn", function () {
-        var taskId = $(this).closest('tr').data('id');
-        var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        var updatedTasks = tasks.filter(function (task) { return task.id !== taskId; });
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-        loadTableData();
-    });
-});
-// ===================== Modal Functions =====================
-var openModal = function () {
-    if (taskModal) {
-        taskModal.classList.remove('hidden');
-    }
-    fetchTeamMembers(); // Fetch team members when the modal is opened
-};
-var closeModal = function () {
-    if (taskModal) {
-        taskModal.classList.add('hidden');
-    }
-};
-// ===================== Fetch Team Members =====================
-var apiEndpoint = "https://team-dashboard-azure.vercel.app/api/index";
-var fetchTeamMembers = function () { return __awaiter(_this, void 0, void 0, function () {
-    var response, teamMembers, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, fetch(apiEndpoint)];
-            case 1:
-                response = _a.sent();
-                return [4 /*yield*/, response.json()];
-            case 2:
-                teamMembers = _a.sent();
-                if (nameSelect) {
-                    teamMembers.forEach(function (member) {
-                        var option = document.createElement('option');
-                        option.value = member.name;
-                        option.textContent = "".concat(member.name, " - ").concat(member.role);
-                        nameSelect.appendChild(option);
-                    });
+    // Type for DOM elements
+    var addTaskBtn = document.getElementById('addTaskBtn');
+    var taskModal_1 = document.getElementById('taskModal');
+    var taskForm = document.getElementById('taskForm');
+    var saveBtn_1 = document.getElementById('saveBtn');
+    var nameSelect_1 = document.getElementById('name');
+    var titleInput_1 = document.getElementById('title');
+    var descriptionTextarea_1 = document.getElementById('description');
+    var statusSelect_1 = document.getElementById('status');
+    var closeBtn = document.getElementById('closeBtn');
+    // ===================== DataTable Initialization =====================
+    $(document).ready(function () {
+        $('#taskTable').DataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            info: false,
+            responsive: false,
+            lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
+            pageLength: 10 // Set the default number of entries to show
+        });
+        // Event listeners for edit and delete buttons
+        $("#taskTable").on("click", ".editBtn", function () {
+            // Edit functionality
+            var taskId = $(this).closest('tr').data('id');
+            var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            var taskToEdit = tasks.find(function (task) { return task.id === taskId; });
+            if (taskToEdit) {
+                // Populate the modal with the task data
+                if (nameSelect_1)
+                    nameSelect_1.value = taskToEdit.name;
+                if (titleInput_1)
+                    titleInput_1.value = taskToEdit.title;
+                if (descriptionTextarea_1)
+                    descriptionTextarea_1.value = taskToEdit.description;
+                if (statusSelect_1)
+                    statusSelect_1.value = taskToEdit.status;
+                // Open the modal for editing
+                openModal_1();
+                // Update the save button to handle the edit
+                if (saveBtn_1) {
+                    saveBtn_1.onclick = null; // Clear existing handler
+                    saveBtn_1.onclick = function () {
+                        if (nameSelect_1 && titleInput_1 && descriptionTextarea_1 && statusSelect_1) {
+                            // Update task with the new values
+                            taskToEdit.name = nameSelect_1.value;
+                            taskToEdit.title = titleInput_1.value;
+                            taskToEdit.description = descriptionTextarea_1.value;
+                            taskToEdit.status = statusSelect_1.value;
+                            // Save the updated task to local storage
+                            var updatedTasks = tasks.map(function (task) { return task.id === taskId ? taskToEdit : task; });
+                            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+                            // Close the modal
+                            closeModal_1();
+                            location.reload();
+                        }
+                    };
                 }
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.error('Error fetching team members:', error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+            }
+        });
+        $("#taskTable").on("click", ".deleteBtn", function () {
+            var taskId = $(this).closest('tr').data('id');
+            var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            var updatedTasks = tasks.filter(function (task) { return task.id !== taskId; });
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+            loadTableData_1();
+        });
     });
-}); };
-// ===================== Save Task =====================
-var saveTask = function (task) {
-    var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.push(task);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    location.reload();
-};
-// ===================== Handle Form Submission =====================
-if (taskForm) {
-    taskForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var task = {
-            id: Date.now(),
-            name: (nameSelect === null || nameSelect === void 0 ? void 0 : nameSelect.value) || '',
-            title: (titleInput === null || titleInput === void 0 ? void 0 : titleInput.value) || '',
-            description: (descriptionTextarea === null || descriptionTextarea === void 0 ? void 0 : descriptionTextarea.value) || '',
-            status: (statusSelect === null || statusSelect === void 0 ? void 0 : statusSelect.value) || ''
-        };
-        saveTask(task);
-        closeModal(); // Close the modal after saving
+    // ===================== Modal Functions =====================
+    var openModal_1 = function () {
+        if (taskModal_1) {
+            taskModal_1.classList.remove('hidden');
+        }
+        fetchTeamMembers_1(); // Fetch team members when the modal is opened
+    };
+    var closeModal_1 = function () {
+        if (taskModal_1) {
+            taskModal_1.classList.add('hidden');
+        }
+    };
+    // ===================== Fetch Team Members =====================
+    var apiEndpoint_1 = "https://team-dashboard-azure.vercel.app/api/index";
+    var fetchTeamMembers_1 = function () { return __awaiter(_this, void 0, void 0, function () {
+        var response, teamMembers, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    debugger;
+                    return [4 /*yield*/, fetch(apiEndpoint_1)];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    teamMembers = _a.sent();
+                    if (nameSelect_1) {
+                        teamMembers.forEach(function (member) {
+                            var option = document.createElement('option');
+                            option.value = member.name;
+                            option.textContent = "".concat(member.name, " - ").concat(member.role);
+                            nameSelect_1.appendChild(option);
+                        });
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    console.error('Error fetching team members:', error_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    // ===================== Save Task =====================
+    var saveTask_1 = function (task) {
+        var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        location.reload();
+    };
+    // ===================== Handle Form Submission =====================
+    if (taskForm) {
+        taskForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var task = {
+                id: Date.now(),
+                name: (nameSelect_1 === null || nameSelect_1 === void 0 ? void 0 : nameSelect_1.value) || '',
+                title: (titleInput_1 === null || titleInput_1 === void 0 ? void 0 : titleInput_1.value) || '',
+                description: (descriptionTextarea_1 === null || descriptionTextarea_1 === void 0 ? void 0 : descriptionTextarea_1.value) || '',
+                status: (statusSelect_1 === null || statusSelect_1 === void 0 ? void 0 : statusSelect_1.value) || ''
+            };
+            saveTask_1(task);
+            closeModal_1(); // Close the modal after saving
+        });
+    }
+    // ===================== Event Listener to Open Modal =====================
+    if (addTaskBtn) {
+        addTaskBtn.addEventListener('click', openModal_1);
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal_1);
+    }
+    // ===================== Load Data from Local Storage =====================
+    var loadTableData_1 = function () {
+        var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        var tableBody = $('#taskTable tbody');
+        tableBody.empty();
+        var completeCount1 = 0;
+        var completeCount2 = 0;
+        var completeCount3 = 0;
+        tasks.forEach(function (task) {
+            var newRow = "\n            <tr data-id=\"".concat(task.id, "\">\n                <td class=\"px-4 py-2\">").concat(task.name, "</td>\n                <td class=\"px-4 py-2\">").concat(task.title, "</td>\n                <td class=\"px-4 py-2\">").concat(task.description, "</td>\n                <td class=\"px-4 py-2\">").concat(task.status, "</td>\n                <td class=\"px-4 py-2\">\n                    <button class=\"editBtn px-2 py-1 bg-blue-500 text-white rounded\">Edit</button>\n                    <button class=\"deleteBtn px-2 py-1 bg-red-500 text-white rounded\">Delete</button>\n                </td>\n            </tr>");
+            if (task.status === "complete") {
+                completeCount1++;
+            }
+            if (task.status === "progress") {
+                completeCount2++;
+            }
+            if (task.status === "to do") {
+                completeCount3++;
+            }
+            tableBody.append(newRow);
+        });
+        document.getElementById('dynamicComplete').textContent = completeCount1.toString();
+        document.getElementById('dynamicProgress').textContent = completeCount2.toString();
+        document.getElementById('dynamicTodo').textContent = completeCount3.toString();
+    };
+    // Initialize table data on page load
+    $(document).ready(function () {
+        loadTableData_1();
     });
 }
-// ===================== Event Listener to Open Modal =====================
-if (addTaskBtn) {
-    addTaskBtn.addEventListener('click', openModal);
-}
-if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-}
-// ===================== Load Data from Local Storage =====================
-var loadTableData = function () {
-    var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    var tableBody = $('#taskTable tbody');
-    tableBody.empty();
-    var completeCount1 = 0;
-    var completeCount2 = 0;
-    var completeCount3 = 0;
-    tasks.forEach(function (task) {
-        var newRow = "\n            <tr data-id=\"".concat(task.id, "\">\n                <td class=\"px-4 py-2\">").concat(task.name, "</td>\n                <td class=\"px-4 py-2\">").concat(task.title, "</td>\n                <td class=\"px-4 py-2\">").concat(task.description, "</td>\n                <td class=\"px-4 py-2\">").concat(task.status, "</td>\n                <td class=\"px-4 py-2\">\n                    <button class=\"editBtn px-2 py-1 bg-blue-500 text-white rounded\">Edit</button>\n                    <button class=\"deleteBtn px-2 py-1 bg-red-500 text-white rounded\">Delete</button>\n                </td>\n            </tr>");
-        if (task.status === "complete") {
-            completeCount1++;
-        }
-        if (task.status === "progress") {
-            completeCount2++;
-        }
-        if (task.status === "to do") {
-            completeCount3++;
-        }
-        tableBody.append(newRow);
-    });
-    document.getElementById('dynamicComplete').textContent = completeCount1.toString();
-    document.getElementById('dynamicProgress').textContent = completeCount2.toString();
-    document.getElementById('dynamicTodo').textContent = completeCount3.toString();
-};
-// Initialize table data on page load
-$(document).ready(function () {
-    loadTableData();
-});

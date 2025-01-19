@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "* local storage :  https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria",
   "main": "index.js",
-  
   "dependencies": {
     "agent-base": "^7.1.3",
     "asynckit": "^0.4.0",
@@ -47,9 +46,12 @@
     "xml-name-validator": "^5.0.0",
     "xmlchars": "^2.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/datatables.net": "^1.10.28",
+    "@types/jquery": "^3.5.32"
+  },
   "scripts": {
-    "dev":"node node-api/index.js"
+    "dev": "node node-api/index.js"
   },
   "keywords": [],
   "author": "",

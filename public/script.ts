@@ -1,65 +1,65 @@
-// Declare necessary types
-interface Task {
-    id: number;
-    name: string;
-    title: string;
-    description: string;
-    status: string;
-}
+{
+  // Declare necessary types
+  interface Task {
+      id: number;
+      name: string;
+      title: string;
+      description: string;
+      status: string;
+  }
 
-interface TeamMember {
-    name: string;
-    role: string;
-}
+  interface TeamMember {
+      name: string;
+      role: string;
+  }
 
-function openHomePage(): void {
-    // Get the Home Page and Task Management Page elements by their IDs
-    const homePage = document.getElementById("homePage") as HTMLElement;
-    const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
+//   function openHomePage(): void {
+//       const homePage = document.getElementById("homePage") as HTMLElement;
+//       const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
 
-    // Show Home Page and hide Task Management Page
-    if (homePage && taskPage) {
-        homePage.classList.remove("hidden");  // Show Home Page
-        taskPage.classList.add("hidden");     // Hide Task Management Page
-    }
-}
+//       if (homePage && taskPage) {
+//           homePage.classList.remove("hidden");
+//           taskPage.classList.add("hidden");
+//       }
+//   }
 
-// Call the function on page load to show the home page initially
-window.onload = openHomePage;
+//   window.onload = openHomePage;
 
+  $(document).ready(() => {
+      // Fetch data and initialize DataTable
+      fetch('https://team-dashboard-azure.vercel.app/api/index')
+          .then((response) => response.json())
+          .then((data) => {
+              const table = $('#example').DataTable({
+                  data: data,
+                  columns: [
+                      { data: 'name', title: 'Name' },
+                      { data: 'role', title: 'Role' },
+                      { data: 'bio', title: 'Short Bio' }
+                  ],
+                  paging: true,
+                  searching: true,
+                  ordering: true,
+                  info: true,
+                  responsive: true
+              });
 
+              $('#searchInput').on('keyup', function (this: HTMLInputElement) {
+                  table.search(this.value).draw();
+              });
 
-// Fetch data and initialize DataTable
-$(document).ready(() => {
-    fetch('https://team-dashboard-azure.vercel.app/api/index')
-        .then((response) => response.json())
-        .then((data) => {
-            const table = $('#example').DataTable({
-                data: data,
-                columns: [
-                    { data: 'name', title: 'Name' },
-                    { data: 'role', title: 'Role' },
-                    { data: 'bio', title: 'Short Bio' }
-                ],
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                responsive: true
-            });
+              $('#totalIncomeDynamic').text(table.rows().count().toString());
+          })
+          .catch((error) => console.error('Error fetching data:', error));
+  });
 
-            // Add search functionality
-           // Add search functionality
-            $('#searchInput').on('keyup', function (this: HTMLInputElement) {
-                table.search(this.value).draw();
-            });
-
-            //=================== Adding count in Card =======================
-            $('#totalIncomeDynamic').text(table.rows().count().toString());
-            // ================================================================
-        })
-        .catch((error) => console.error('Error fetching data:', error));
-});
+  // Type for DOM elements
+//   const addTaskBtn: HTMLElement | null = document.getElementById('addTaskBtn');
+//   const taskModal: HTMLElement | null = document.getElementById('taskModal');
+//   const taskForm: HTMLFormElement | null = document.getElementById('taskForm') as HTMLFormElement;
+//   const saveBtn: HTMLElement | null = document.getElementById('saveBtn');
+//   const nameSelect: HTMLSelectElement | null = document.getElementById('name') as HTMLSelectElement;
+//   const titleInput: HTMLInputElement | null = document.getElementById('title') as HTMLInputElement;
 
 // Initial page load configuration
 $(document).ready(() => {
@@ -126,14 +126,14 @@ $(document).ready(function () {
                         taskToEdit.title = titleInput.value;
                         taskToEdit.description = descriptionTextarea.value;
                         taskToEdit.status = statusSelect.value;
-
+                        
                         // Save the updated task to local storage
                         const updatedTasks: Task[] = tasks.map(task => task.id === taskId ? taskToEdit : task);
                         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
 
                         // Close the modal
                         closeModal();
-                        // location.reload();
+                        location.reload();
                     }
                 };
             }
@@ -272,3 +272,4 @@ const loadTableData = (): void => {
 $(document).ready(function () {
     loadTableData();
 });
+}
