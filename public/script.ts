@@ -13,17 +13,17 @@
       role: string;
   }
 
-//   function openHomePage(): void {
-//       const homePage = document.getElementById("homePage") as HTMLElement;
-//       const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
+  function openHomePage(): void {
+      const homePage = document.getElementById("homePage") as HTMLElement;
+      const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
 
-//       if (homePage && taskPage) {
-//           homePage.classList.remove("hidden");
-//           taskPage.classList.add("hidden");
-//       }
-//   }
+      if (homePage && taskPage) {
+          homePage.classList.remove("hidden");
+          taskPage.classList.add("hidden");
+      }
+  }
 
-//   window.onload = openHomePage;
+  window.onload = openHomePage;
 
   $(document).ready(() => {
       // Fetch data and initialize DataTable

@@ -36,15 +36,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 {
-    //   function openHomePage(): void {
-    //       const homePage = document.getElementById("homePage") as HTMLElement;
-    //       const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-    //       if (homePage && taskPage) {
-    //           homePage.classList.remove("hidden");
-    //           taskPage.classList.add("hidden");
-    //       }
-    //   }
-    //   window.onload = openHomePage;
+    function openHomePage() {
+        var homePage = document.getElementById("homePage");
+        var taskPage = document.getElementById("taskManagementPage");
+        if (homePage && taskPage) {
+            homePage.classList.remove("hidden");
+            taskPage.classList.add("hidden");
+        }
+    }
+    window.onload = openHomePage;
     $(document).ready(function () {
         // Fetch data and initialize DataTable
         fetch('https://team-dashboard-azure.vercel.app/api/index')
