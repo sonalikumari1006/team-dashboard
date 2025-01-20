@@ -7,7 +7,14 @@
     <title>Document</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-   
+    <style>
+        @media (min-width: 992px) {
+            main {
+                padding-left: 240px;
+            }
+        }
+        
+    </style>
        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
     
      
@@ -96,7 +103,23 @@
                 </div>
             </div>
         </div>
-        
+        <div class="col-md-6 ExpensePieChart card" >
+            <!-- <div class="headingbarchart">
+                <p class="headingtitle">Expenses Chart</p>
+            </div> -->
+            
+            <!-- Removed the calendar container (datepicker) -->
+            <!-- <div class="calendar-container">
+                <input type="text" id="datepicker">
+            </div> -->
+    
+            <!-- <div class="pieChartContainer">
+                <div class="noDataFoundHere" id="pieChartNodataFound" style="display:none">
+                    <img class="noDataFoundHereImg piechartNodataclass" src="~/datanotfound.svg" />
+                </div>
+                <canvas id="myChart" class="incomeExpensePieChart"></canvas>
+            </div> -->
+        </div>
         </div>
         
         
@@ -112,7 +135,16 @@
                 </tr>
             </thead>
             <tbody>
-                
+                <!-- <tr>
+                    <td class="px-4 py-2">John Doe</td>
+                    <td class="px-4 py-2">Developer</td>
+                    <td class="px-4 py-2">Experienced in JavaScript and Python.</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2">Jane Smith</td>
+                    <td class="px-4 py-2">Designer</td>
+                    <td class="px-4 py-2">Specializes in UI/UX design.</td>
+                </tr> -->
                 <!-- Add more rows as needed -->
             </tbody>
         </table>
@@ -247,6 +279,7 @@
 </div>
 <!-- ===================================================================================================== -->
 </main>
+
   
 <script type="module" src="./script.js"></script>
  
