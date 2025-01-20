@@ -148,10 +148,27 @@ var _this = this;
         });
     });
     // ===================== Modal Functions =====================
+    var clearModalFields_1 = function () {
+        // Get all input fields and reset them to default/empty values
+        var nameInput = document.getElementById('nameInput');
+        var titleInput = document.getElementById('titleInput');
+        var descriptionInput = document.getElementById('descriptionInput');
+        var statusInput = document.getElementById('statusInput');
+        if (nameInput)
+            nameInput.value = '';
+        if (titleInput)
+            titleInput.value = '';
+        if (descriptionInput)
+            descriptionInput.value = '';
+        if (statusInput)
+            statusInput.value = ''; // Reset to the default option
+    };
     var openModal_1 = function () {
         if (taskModal_1) {
             taskModal_1.classList.remove('hidden');
         }
+        // clear previous data from the model field 
+        clearModalFields_1();
         fetchTeamMembers_1(); // Fetch team members when the modal is opened
     };
     var closeModal_1 = function () {
@@ -176,6 +193,8 @@ var _this = this;
                 case 2:
                     teamMembers = _a.sent();
                     if (nameSelect_1) {
+                        // Clear previous options
+                        nameSelect_1.innerHTML = '';
                         teamMembers.forEach(function (member) {
                             var option = document.createElement('option');
                             option.value = member.name;

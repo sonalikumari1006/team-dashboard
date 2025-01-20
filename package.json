@@ -51,7 +51,7 @@
     "@types/jquery": "^3.5.32"
   },
   "scripts": {
-    "dev": "node node-api/index.js"
+    "dev": "node api/index.js"
   },
   "keywords": [],
   "author": "",

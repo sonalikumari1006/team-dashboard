@@ -139,11 +139,27 @@
   });
 
   // ===================== Modal Functions =====================
+  
+    const clearModalFields = (): void => {
+            // Get all input fields and reset them to default/empty values
+            const nameInput = document.getElementById('nameInput') as HTMLInputElement;
+            const titleInput = document.getElementById('titleInput') as HTMLInputElement;
+            const descriptionInput = document.getElementById('descriptionInput') as HTMLTextAreaElement;
+            const statusInput = document.getElementById('statusInput') as HTMLSelectElement;
+
+            if (nameInput) nameInput.value = '';
+            if (titleInput) titleInput.value = '';
+            if (descriptionInput) descriptionInput.value = '';
+            if (statusInput) statusInput.value = ''; // Reset to the default option
+        };
+
 
   const openModal = (): void => {
       if (taskModal) {
           taskModal.classList.remove('hidden');
       }
+      // clear previous data from the model field 
+      clearModalFields();
       fetchTeamMembers();  // Fetch team members when the modal is opened
   };
 
@@ -165,6 +181,8 @@
           const teamMembers: TeamMember[] = await response.json();
 
           if (nameSelect) {
+              // Clear previous options
+            nameSelect.innerHTML = '';
               teamMembers.forEach((member) => {
                   const option = document.createElement('option');
                   option.value = member.name;
@@ -211,6 +229,7 @@
 
   if (addTaskBtn) {
       addTaskBtn.addEventListener('click', openModal);
+
   }
 
   if (closeBtn) {
