@@ -16,18 +16,21 @@
   function openHomePage(): void {
       const homePage = document.getElementById("homePage") as HTMLElement;
       const taskPage = document.getElementById("taskManagementPage") as HTMLElement;
-
+      // hidden class used to hiden element 
       if (homePage && taskPage) {
           homePage.classList.remove("hidden");
           taskPage.classList.add("hidden");
       }
   }
-
+  // window: This refers to the global window object in the browser, which represents the entire web page and the browser window itself.
+  // onload is event listen
   window.onload = openHomePage;
 
   $(document).ready(() => {
       // Fetch data and initialize DataTable
+      // The fetch function sends an HTTP GET request to the specified URL (https://team-dashboard-azure.vercel.app/api/index) to retrieve data from an API. 
       fetch('https://team-dashboard-azure.vercel.app/api/index')
+          // response convert into json format 
           .then((response) => response.json())
           .then((data) => {
               const table = $('#example').DataTable({
@@ -43,10 +46,10 @@
                   info: true,
                   responsive: true
               });
-
-              $('#searchInput').on('keyup', function (this: HTMLInputElement) {
-                  table.search(this.value).draw();
-              });
+// =========== This is pending need to more focus on this ============================
+            //   $('#searchInput').on('keyup', function (this: HTMLInputElement) {
+            //       table.search(this.value).draw();
+            //   });
 
               $('#totalIncomeDynamic').text(table.rows().count().toString());
           })
@@ -79,7 +82,7 @@
           lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
           pageLength: 10 // Set the default number of entries to show
       });
-
+// ================================== Please Start from the hear ================================
       // Event listeners for edit and delete buttons
       $("#taskTable").on("click", ".editBtn", function () {
           // Edit functionality
