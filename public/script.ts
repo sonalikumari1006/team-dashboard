@@ -38,7 +38,7 @@
                   columns: [
                       { data: 'name', title: 'Name' },
                       { data: 'role', title: 'Role' },
-                      { data: 'bio', title: 'Short Bio' }
+                      { data: 'bio', title: 'Short Bio'}
                   ],
                   paging: true,
                   searching: true,
@@ -46,13 +46,10 @@
                   info: true,
                   responsive: true
               });
-// =========== This is pending need to more focus on this ============================
-            //   $('#searchInput').on('keyup', function (this: HTMLInputElement) {
-            //       table.search(this.value).draw();
-            //   });
 
-              $('#totalIncomeDynamic').text(table.rows().count().toString());
-          })
+
+              $('#totalIncomeDynamic').text(table.rows().count());
+            })
           .catch((error) => console.error('Error fetching data:', error));
   });
 
@@ -67,8 +64,8 @@
   const statusSelect: HTMLSelectElement | null = document.getElementById('status') as HTMLSelectElement;
   const closeBtn: HTMLElement | null = document.getElementById('closeBtn');
   
-  let isEditing: boolean = false;
-  let editingTaskId: number | null = null;
+//   let isEditing: boolean = false;
+//   let editingTaskId: number | null = null;
 
   // ===================== DataTable Initialization =====================
 
@@ -79,14 +76,13 @@
           ordering: false,
           info: false,
           responsive: false,
-          lengthMenu: [10, 25, 50, 100], // Customize the "Show entries" dropdown
-          pageLength: 10 // Set the default number of entries to show
       });
 // ================================== Please Start from the hear ================================
       // Event listeners for edit and delete buttons
       $("#taskTable").on("click", ".editBtn", function () {
           // Edit functionality
           const taskId: number = $(this).closest('tr').data('id');
+          // Task is interface(like object) but Task[]-> Array of object
           const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
           const taskToEdit: Task | undefined = tasks.find(task => task.id === taskId);
 
@@ -100,13 +96,11 @@
               // Open the modal for editing
               openModal();
               //set edit mode
-              isEditing=true;
-              editingTaskId=taskId;
+              
 
               // Update the save button to handle the edit
               if (saveBtn) {
                 // Clear any previously assigned event listeners
-                  saveBtn.onclick = null;
                   saveBtn.onclick = () => {
                       if (nameSelect && titleInput && descriptionTextarea && statusSelect) {
                           // Update task with the new values
@@ -120,9 +114,7 @@
                           localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                           loadTableData();
 
-                          // Set the editing state 
-                            isEditing = false;
-                            editingTaskId = null;
+                          
                           // Close the modal
                           closeModal();
                       }
@@ -144,16 +136,11 @@
   // ===================== Modal Functions =====================
   
     const clearModalFields = (): void => {
-            // Get all input fields and reset them to default/empty values
-            const nameInput = document.getElementById('nameInput') as HTMLInputElement;
-            const titleInput = document.getElementById('titleInput') as HTMLInputElement;
-            const descriptionInput = document.getElementById('descriptionInput') as HTMLTextAreaElement;
-            const statusInput = document.getElementById('statusInput') as HTMLSelectElement;
-
-            if (nameInput) nameInput.value = '';
+            
+            if (nameSelect) nameSelect.value = '';
             if (titleInput) titleInput.value = '';
-            if (descriptionInput) descriptionInput.value = '';
-            if (statusInput) statusInput.value = ''; // Reset to the default option
+            if (descriptionTextarea) descriptionTextarea.value = '';
+            if (statusSelect) statusSelect.value = ''; // Reset to the default option
         };
 
 
@@ -170,8 +157,7 @@
       if (taskModal) {
           taskModal.classList.add('hidden');
       }
-      isEditing=false;
-      editingTaskId = null;
+      
   };
 
   // ===================== Fetch Team Members =====================
@@ -212,9 +198,6 @@
   if (taskForm) {
       taskForm.addEventListener('submit', (e: Event) => {
           e.preventDefault();
-        if(isEditing){
-            return;
-        }
           const task: Task = {
               id: Date.now(),
               name: nameSelect?.value || '',
