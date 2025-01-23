@@ -97,7 +97,7 @@
               openModal();
               //set edit mode
               
-
+// please start from this ========================
               // Update the save button to handle the edit
               if (saveBtn) {
                 // Clear any previously assigned event listeners
@@ -128,7 +128,6 @@
           const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
           const updatedTasks: Task[] = tasks.filter(task => task.id !== taskId);
           localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-
           loadTableData();
       });
   });
@@ -199,6 +198,7 @@
       taskForm.addEventListener('submit', (e: Event) => {
           e.preventDefault();
           const task: Task = {
+            // create a unique id in current timeStamp
               id: Date.now(),
               name: nameSelect?.value || '',
               title: titleInput?.value || '',
